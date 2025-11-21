@@ -4,8 +4,9 @@ import torch.nn as nn
 import torch.nn.functional as F
 
 from src.attention_layers import StandardAttention, MHA, MQA, GQA
-from src.encoder import PositionalEncoding, EncoderLayer
+from src.encoder import EncoderLayer
 from src.decoder import DecoderLayer
+from src.positional_encoding import FAPE
 
 
 DEVICE = t.device('cuda' if t.cuda.is_available() else 'cpu')
@@ -41,7 +42,7 @@ class Transformer(nn.Module):
 
         # encoder
         self.input_token_embedding = nn.Embedding(self.vocab_size, d_model)
-        self.positional_encoder = PositionalEncoding(d_model=self.d_model, max_len=max_seq_len)
+        self.positional_encoder = FAPE(d_model=self.d_model, max_seq_len=max_seq_len)
         self.dropout_encoder = nn.Dropout(0.1) # after embeddings
         self.encoder = EncoderLayer(attention_module=attention_module, d_model=d_model)
         
